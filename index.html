@@ -15,12 +15,15 @@ Users: <span class="users"></span>
 Average result: <span class="average"></span>
 </pre>
 
+<progress value="50" max="100">50%</progress>
+
 <script src="/socket.io/socket.io.js"></script>
 <script>
 	let socket = io(),
 		d = document,
 		range = d.querySelector('[type="range"]'),
 		output = d.querySelector('.average'),
+		progress = d.querySelector('progress'),
 		users = d.querySelector('.users');
 
 	socket.emit('range change', range.value);
@@ -32,6 +35,8 @@ Average result: <span class="average"></span>
 
 	socket.on('range change', value => {
 		output.innerHTML = value;
+		progress.value = value;
+		progress.innerHTML = value + '%';
 	});
 
 	socket.on('update users', value => {
