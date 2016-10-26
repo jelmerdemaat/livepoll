@@ -1,4 +1,5 @@
 node_modules/
 .DS_Store
-.css.map
-.js.map
+*.css.map
+*.js.map
+*.log
