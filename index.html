@@ -9,23 +9,33 @@
 <body>
 
 <input type="range" min="0" max="100" value="50" step="5">
-<output name="result">50</output>
+
+<pre class="data">
+Users: <span class="users"></span>
+Average result: <span class="average"></span>
+</pre>
 
 <script src="/socket.io/socket.io.js"></script>
 <script>
 	let socket = io(),
 		d = document,
 		range = d.querySelector('[type="range"]'),
-		output = d.querySelector('[name="result"]');
+		output = d.querySelector('.average'),
+		users = d.querySelector('.users');
+
+	socket.emit('range change', range.value);
 
 	range.addEventListener('input', e => {
 		e.preventDefault();
-
 		socket.emit('range change', range.value);
 	});
 
 	socket.on('range change', value => {
 		output.innerHTML = value;
+	});
+
+	socket.on('update users', value => {
+		users.innerHTML = value;
 	});
 </script>
 
