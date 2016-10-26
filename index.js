@@ -1,8 +1,11 @@
 'use strict';
 
-let app = require('express')(),
+let express = require('express'),
+	app = express(),
 	http = require('http').Server(app),
-	io = require('socket.io')(http);
+	io = require('socket.io')(http),
+	path = require('path');
+
 
 let updateUsers = function() {
 	io.emit('update users', io.engine.clientsCount);
@@ -54,6 +57,9 @@ app.set('port', (process.env.PORT || 3000));
 app.get('/', function(req, res) {
 	res.sendFile(__dirname + '/index.html');
 });
+
+app.use('/scripts', express.static(path.join(__dirname, 'node_modules/')));
+
 
 http.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
