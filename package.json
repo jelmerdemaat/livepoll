@@ -1,6 +1,6 @@
 {
   "name": "livepoll",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Live polls, via web sockets",
   "main": "index.js",
   "engines": {
