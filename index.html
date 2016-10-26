@@ -26,14 +26,16 @@ Average result: <span class="average"></span>
 		progress = d.querySelector('progress'),
 		users = d.querySelector('.users');
 
-	socket.emit('range change', range.value);
+	socket.on('connect', () => {
+		socket.emit('range change', range.value);
+	});
 
 	range.addEventListener('input', e => {
 		e.preventDefault();
 		socket.emit('range change', range.value);
 	});
 
-	socket.on('range change', value => {
+	socket.on('average change', value => {
 		output.innerHTML = value;
 		progress.value = value;
 		progress.innerHTML = value + '%';
