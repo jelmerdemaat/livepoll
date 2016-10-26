@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Index</title>
+</head>
+<body>
+
+<input type="range" min="0" max="100" value="50" step="5">
+<output name="result">50</output>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+	let socket = io(),
+		d = document,
+		range = d.querySelector('[type="range"]'),
+		output = d.querySelector('[name="result"]');
+
+	range.addEventListener('input', e => {
+		e.preventDefault();
+
+		socket.emit('range change', range.value);
+	});
+
+	socket.on('range change', value => {
+		output.innerHTML = value;
+	});
+</script>
+
+</body>
+</html>
