@@ -17,13 +17,17 @@ let updateNumbers = function() {
 	total = 0;
 	average = 0;
 
-	for(let client in numbers) {
-		if (!numbers.hasOwnProperty(client)) continue;
+	if(Object.keys(numbers).length > 0) {
+		for(let client in numbers) {
+			if (!numbers.hasOwnProperty(client)) continue;
 
-		total += numbers[client];
+			total += numbers[client];
+		}
+
+		average = total / Object.keys(numbers).length;
+	} else {
+		average = 50;
 	}
-
-	average = total / Object.keys(numbers).length;
 
 	console.log('avg: ' + average);
 
@@ -49,6 +53,12 @@ io.on('connection', function(socket) {
 		delete numbers[socket.id];
 		updateNumbers();
 		console.log('user disconnected: ', socket.id);
+	});
+
+	socket.on('reset', () => {
+		console.log('Resetting everything...');
+		numbers = {};
+		updateNumbers();
 	});
 });
 
