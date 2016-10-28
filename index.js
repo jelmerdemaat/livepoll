@@ -2,6 +2,7 @@
 
 let express = require('express'),
 	app = express(),
+	router = express.Router(),
 	http = require('http').Server(app),
 	io = require('socket.io')(http),
 	path = require('path');
@@ -40,7 +41,7 @@ io.on('connection', function(socket) {
 	updateUsers();
 	console.log('user connected: ', socket.id);
 
-	socket.on('range change', function(value){
+	socket.on('range change', function(value) {
 		console.log('range change: ' + value + ', user: ' + socket.id);
 
 		numbers[socket.id] = parseInt(value);
@@ -64,12 +65,12 @@ io.on('connection', function(socket) {
 
 app.set('port', (process.env.PORT || 3000));
 
-app.get('/', function(req, res) {
-	res.sendFile(__dirname + '/index.html');
-});
-
+app.use(express.static('views'));
 app.use('/scripts', express.static(path.join(__dirname, 'node_modules/')));
 
+app.use(function(req, res, next) {
+  res.status(404).send('Damn! 4-oh-4!');
+});
 
 http.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
