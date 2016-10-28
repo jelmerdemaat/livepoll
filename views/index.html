@@ -10,58 +10,28 @@
 		body {
 			padding: 2em;
 		}
-
-		progress {
-			width: 100%;
-		}
 	</style>
 </head>
 <body>
+	<h2>New livepoll room</h2>
+	<p>Name: <code class="name"></code></p>
+	<a href="#" class="link">Start poll!</a>
+	<script>
+		let alphabet = '0123456789abcdefghijkmnpqrstuvwxyz',
+			base = alphabet.length,
+			length = 5,
+			input,
+			encoded = '',
+			i = 0;
 
-<h2>Livepoll</h2>
+		for(i; i < length; i++) {
+			input = Math.ceil(Math.random() * 100);
+			encoded += alphabet[input % base];
+		}
 
-<h3>Your opinion</h3>
-
-<input type="range" min="0" max="100" value="50" step="5">
-
-<h3>Live results</h3>
-
-<progress value="50" max="100">50%</progress>
-
-<pre class="data">
-Users: <span class="users"></span>
-Average result: <span class="average"></span>
-</pre>
-
-
-<script src="/socket.io/socket.io.js"></script>
-<script>
-	let socket = io(),
-		d = document,
-		range = d.querySelector('[type="range"]'),
-		output = d.querySelector('.average'),
-		progress = d.querySelector('progress'),
-		users = d.querySelector('.users');
-
-	socket.on('connect', () => {
-		socket.emit('range change', range.value);
-	});
-
-	range.addEventListener('input', e => {
-		e.preventDefault();
-		socket.emit('range change', range.value);
-	});
-
-	socket.on('average change', value => {
-		output.innerHTML = value;
-		progress.value = value;
-		progress.innerHTML = value + '%';
-	});
-
-	socket.on('update users', value => {
-		users.innerHTML = value;
-	});
-</script>
+		document.querySelector('.name').innerHTML = encoded;
+		document.querySelector('.link').setAttribute('href', '/poll/' + encoded);
+	</script>
 
 </body>
 </html>

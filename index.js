@@ -5,10 +5,12 @@ let express = require('express'),
 	router = express.Router(),
 	http = require('http').Server(app),
 	io = require('socket.io')(http),
-	path = require('path');
+	path = require('path'),
+	room = '';
 
 
-let updateUsers = function() {
+let updateUsers = function(socket) {
+	console.log(socket.rooms);
 	io.emit('update users', io.engine.clientsCount);
 }
 
@@ -30,15 +32,17 @@ let updateNumbers = function() {
 		average = 50;
 	}
 
-	console.log('avg: ' + average);
-
 	io.emit('average change', Math.round(average));
 }
 
 let numbers = {};
 
 io.on('connection', function(socket) {
-	updateUsers();
+	console.log('Joining room ' + room);
+	socket.join(room.toString(), () => {
+		updateUsers(socket);
+	});
+
 	console.log('user connected: ', socket.id);
 
 	socket.on('range change', function(value) {
@@ -50,7 +54,7 @@ io.on('connection', function(socket) {
 	});
 
 	socket.on('disconnect', () => {
-		updateUsers();
+		updateUsers(socket);
 		delete numbers[socket.id];
 		updateNumbers();
 		console.log('user disconnected: ', socket.id);
@@ -68,9 +72,16 @@ app.set('port', (process.env.PORT || 3000));
 app.use(express.static('views'));
 app.use('/scripts', express.static(path.join(__dirname, 'node_modules/')));
 
+app.get('/poll/:pollId', function(req, res) {
+	console.log('Poll id started: ' + req.params.pollId);
+	room = req.params.pollId;
+	res.sendFile(path.join(__dirname, '/views/app.html'));
+});
+
 app.use(function(req, res, next) {
   res.status(404).send('Damn! 4-oh-4!');
 });
+
 
 http.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
