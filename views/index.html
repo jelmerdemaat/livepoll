@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Livepoll</title>
+	<link rel="stylesheet" href="/scripts/normalize.css/normalize.css">
+	<style media="screen">
+		body {
+			padding: 2em;
+		}
+	</style>
+</head>
+<body>
+	<h2>New livepoll room</h2>
+	<p>Name: <code class="name"></code></p>
+	<a href="#" class="link">Start poll!</a>
+	<script>
+		let alphabet = '0123456789abcdefghijkmnpqrstuvwxyz',
+			base = alphabet.length,
+			length = 5,
+			input,
+			encoded = '',
+			i = 0;
+
+		for(i; i < length; i++) {
+			input = Math.ceil(Math.random() * 100);
+			encoded += alphabet[input % base];
+		}
+
+		document.querySelector('.name').innerHTML = encoded;
+		document.querySelector('.link').setAttribute('href', '/poll/' + encoded);
+	</script>
+
+</body>
+</html>
