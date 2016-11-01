@@ -8,7 +8,7 @@
   },
   "scripts": {
     "start": "node index.js",
-    "lint": "xo index.js && xo poll.js"
+    "test": "xo src/*.js"
   },
   "repository": {
     "type": "git",
