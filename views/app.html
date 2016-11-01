@@ -45,6 +45,7 @@ Average result: <span class="average"></span>
 
 	socket.on('connect', () => {
 		socket.emit('range change', range.value);
+		socket.emit('room enter', window.location.pathname);
 	});
 
 	range.addEventListener('input', e => {
@@ -60,6 +61,10 @@ Average result: <span class="average"></span>
 
 	socket.on('update users', value => {
 		users.innerHTML = value;
+	});
+
+	socket.on('log', value => {
+		console.info(value);
 	});
 </script>
 

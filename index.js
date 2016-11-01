@@ -1,69 +1,46 @@
 'use strict';
 
-let express = require('express'),
-	app = express(),
-	router = express.Router(),
-	http = require('http').Server(app),
-	io = require('socket.io')(http),
-	path = require('path'),
-	room = '';
+const path = require('path');
 
+const express = require('express');
 
-let updateUsers = function(socket) {
-	console.log(socket.rooms);
-	io.emit('update users', io.engine.clientsCount);
-}
+const app = express();
 
-let total, average;
+const http = require('http').Server(app);
 
-let updateNumbers = function() {
-	total = 0;
-	average = 0;
+const io = require('socket.io')(http);
 
-	if(Object.keys(numbers).length > 0) {
-		for(let client in numbers) {
-			if (!numbers.hasOwnProperty(client)) continue;
+const Poll = require('./poll')(io);
 
-			total += numbers[client];
-		}
-
-		average = total / Object.keys(numbers).length;
-	} else {
-		average = 50;
-	}
-
-	io.emit('average change', Math.round(average));
-}
-
-let numbers = {};
-
-io.on('connection', function(socket) {
-	console.log('Joining room ' + room);
-	socket.join(room.toString(), () => {
-		updateUsers(socket);
-	});
-
+io.on('connection', socket => {
 	console.log('user connected: ', socket.id);
 
-	socket.on('range change', function(value) {
-		console.log('range change: ' + value + ', user: ' + socket.id);
+	socket.on('room enter', function (data) {
+		let room = path.parse(data).name;
 
-		numbers[socket.id] = parseInt(value);
+		socket.join(room, () => {
+			if (!io.sockets.adapter.rooms[room].poll) {
+				io.sockets.adapter.rooms[room].poll = new Poll(room);
+			}
 
-		updateNumbers();
-	});
+			let currentPoll = io.sockets.adapter.rooms[room].poll;
 
-	socket.on('disconnect', () => {
-		updateUsers(socket);
-		delete numbers[socket.id];
-		updateNumbers();
-		console.log('user disconnected: ', socket.id);
-	});
+			currentPoll.updateClient(socket.id, currentPoll.average);
+			currentPoll.update();
 
-	socket.on('reset', () => {
-		console.log('Resetting everything...');
-		numbers = {};
-		updateNumbers();
+			socket.on('range change', value => {
+				console.log('range change: ' + value + ', user: ' + socket.id);
+
+				currentPoll.updateClient(socket.id, parseInt(value, 10));
+				currentPoll.updateNumbers();
+			});
+
+			socket.on('disconnect', function () {
+				console.log('user disconnected: ', socket.id);
+				currentPoll.deleteClient(socket.id);
+				currentPoll.update();
+			});
+		});
 	});
 });
 
@@ -72,17 +49,14 @@ app.set('port', (process.env.PORT || 3000));
 app.use(express.static('views'));
 app.use('/scripts', express.static(path.join(__dirname, 'node_modules/')));
 
-app.get('/poll/:pollId', function(req, res) {
-	console.log('Poll id started: ' + req.params.pollId);
-	room = req.params.pollId;
+app.get('/poll/:pollId', function (req, res) {
 	res.sendFile(path.join(__dirname, '/views/app.html'));
 });
 
-app.use(function(req, res, next) {
-  res.status(404).send('Damn! 4-oh-4!');
+app.use(function (req, res) {
+	res.status(404).send('Damn! 4-oh-4!');
 });
 
-
-http.listen(app.get('port'), function() {
-  console.log('Node app is running on port', app.get('port'));
+http.listen(app.get('port'), function () {
+	console.log('Node app is running on port', app.get('port'));
 });

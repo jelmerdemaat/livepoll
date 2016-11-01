@@ -7,7 +7,8 @@
     "node": "6.3.1"
   },
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "lint": "xo index.js && xo poll.js"
   },
   "repository": {
     "type": "git",
@@ -19,5 +20,8 @@
     "socket.io": "^1.5.1"
   },
   "author": "Jelmer de Maat",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "xo": "^0.17.0"
+  }
 }
