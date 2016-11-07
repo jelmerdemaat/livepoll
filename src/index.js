@@ -2,13 +2,15 @@
 
 const path = require('path');
 
+const http = require('http');
+
 const express = require('express');
 
 const app = express();
 
-const http = require('http').Server(app);
+const server = new http.Server(app);
 
-const io = require('socket.io')(http);
+const io = require('socket.io')(server);
 
 const Poll = require('./poll')(io);
 
@@ -57,6 +59,6 @@ app.use(function (req, res) {
 	res.status(404).send('Damn! 4-oh-4!');
 });
 
-http.listen(app.get('port'), function () {
+server.listen(app.get('port'), function () {
 	console.log('Node app is running on port', app.get('port'));
 });
