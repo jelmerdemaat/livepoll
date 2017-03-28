@@ -56,6 +56,10 @@ app.get('/poll/:pollId', (req, res) => {
 	res.render(path.join(__dirname, '../views/app', req.baseUrl));
 });
 
+app.get('/sw.js', (req, res) => {
+	res.sendFile(path.join(__dirname, '../static/sw.js'));
+});
+
 app.use((req, res) => {
 	res.status(404).send('Damn! 4-oh-4!');
 });

@@ -16,6 +16,14 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
 
 	<script>
+		if ('serviceWorker' in navigator) {
+			window.addEventListener('load', function() {
+				navigator.serviceWorker.register('/sw.js', {
+					scope: '/'
+				});
+			});
+		}
+
 		WebFont.load({
 			google: {
 				families: ['Anonymous Pro:400,700']
