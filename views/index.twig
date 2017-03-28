@@ -1,27 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-
-    <title>Livepoll</title>
-
-	<link rel="stylesheet" href="/scripts/normalize.css/normalize.css">
-	<link rel="stylesheet" href="/static/style/style.css">
-
-	<link rel="apple-touch-icon" sizes="180x180" href="/static/favicons/apple-touch-icon.png">
-	<link rel="icon" type="image/png" href="/static/favicons/favicon-32x32.png" sizes="32x32">
-	<link rel="icon" type="image/png" href="/static/favicons/favicon-16x16.png" sizes="16x16">
-	<link rel="manifest" href="/static/favicons/manifest.json">
-	<link rel="mask-icon" href="/static/favicons/safari-pinned-tab.svg" color="#111111">
-	<meta name="theme-color" content="#ffffff">
-</head>
-<body>
-	<header class="head">
-		<h1>Livepoll 〽️</h1>
-		<p>Live query your audience. A beta.</p>
-	</header>
+{% include 'header.twig' %}
 
 	<h2>Action! Start a new livepoll room.</h2>
 	<p>Name: <code class="name"></code></p>
@@ -29,45 +6,20 @@
 
 
 	<script>
-	let alphabet = '0123456789abcdefghijkmnpqrstuvwxyz',
-		base = alphabet.length,
-		length = 5,
-		input,
-		encoded = '',
-		i = 0;
+		let alphabet = '0123456789abcdefghijkmnpqrstuvwxyz',
+			base = alphabet.length,
+			length = 5,
+			input,
+			encoded = '',
+			i = 0;
 
-	for(i; i < length; i++) {
-		input = Math.ceil(Math.random() * 100);
-		encoded += alphabet[input % base];
-	}
+		for(i; i < length; i++) {
+			input = Math.ceil(Math.random() * 100);
+			encoded += alphabet[input % base];
+		}
 
-	document.querySelector('.name').innerHTML = encoded;
-	document.querySelector('.link').setAttribute('href', '/poll/' + encoded);
+		document.querySelector('.name').innerHTML = encoded;
+		document.querySelector('.link').setAttribute('href', '/poll/' + encoded);
 	</script>
 
-	<script src="https://www.gstatic.com/firebasejs/3.7.3/firebase.js"></script>
-
-	<script>
-	// Initialize Firebase
-	var config = {
-		apiKey: "AIzaSyBGHqRMAjkNDiojFtq9N3SsZ07nTra-CRI",
-		authDomain: "livepoll-1a4e5.firebaseapp.com",
-		databaseURL: "https://livepoll-1a4e5.firebaseio.com",
-		storageBucket: "livepoll-1a4e5.appspot.com",
-		messagingSenderId: "308828594801"
-	};
-
-	firebase.initializeApp(config);
-	</script>
-
-	<script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
-
-	<script>
-		WebFont.load({
-			google: {
-				families: ['Anonymous Pro:400,700']
-			}
-		});
-	</script>
-</body>
-</html>
+{% include 'footer.twig' %}
