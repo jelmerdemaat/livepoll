@@ -8,6 +8,7 @@
   },
   "scripts": {
     "start": "node index.js",
+    "dev": "nodemon index.js",
     "test": "xo src/*.js"
   },
   "repository": {
@@ -22,6 +23,7 @@
   "author": "Jelmer de Maat",
   "license": "MIT",
   "devDependencies": {
+    "nodemon": "^1.11.0",
     "xo": "^0.17.0"
   }
 }

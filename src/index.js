@@ -15,8 +15,6 @@ const io = require('socket.io')(server);
 const Poll = require('./poll')(io);
 
 io.on('connection', socket => {
-	console.log('user connected: ', socket.id);
-
 	socket.on('room enter', function (data) {
 		let room = path.parse(data).name;
 
@@ -31,14 +29,11 @@ io.on('connection', socket => {
 			currentPoll.update();
 
 			socket.on('range change', value => {
-				console.log('range change: ' + value + ', user: ' + socket.id);
-
 				currentPoll.updateClient(socket.id, parseInt(value, 10));
 				currentPoll.updateNumbers();
 			});
 
 			socket.on('disconnect', function () {
-				console.log('user disconnected: ', socket.id);
 				currentPoll.deleteClient(socket.id);
 				currentPoll.update();
 			});
@@ -50,6 +45,7 @@ app.set('port', (process.env.PORT || 3000));
 
 app.use(express.static('views'));
 app.use('/scripts', express.static(path.join(__dirname, '../node_modules/')));
+app.use('/static', express.static(path.join(__dirname, '../static/')));
 
 app.get('/poll/:pollId', function (req, res) {
 	res.sendFile(path.join(__dirname, '../views/app.html'));
