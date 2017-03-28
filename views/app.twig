@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<title>Livepoll</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <title>Livepoll</title>
+
 	<link rel="stylesheet" href="/scripts/normalize.css/normalize.css">
 	<link rel="stylesheet" href="/static/style/style.css">
 
@@ -16,56 +18,58 @@
 	<meta name="theme-color" content="#ffffff">
 </head>
 <body>
+	<header class="head">
+		<h1>Livepoll 〽️</h1>
+		<p>Live query your audience. A beta.</p>
+	</header>
 
-<h2>Livepoll</h2>
+	<h3>Your opinion</h3>
 
-<h3>Your opinion</h3>
+	<input type="range" min="0" max="100" value="50" step="5">
 
-<input type="range" min="0" max="100" value="50" step="5">
+	<h3>Live results</h3>
 
-<h3>Live results</h3>
+	<progress value="50" max="100">50%</progress>
 
-<progress value="50" max="100">50%</progress>
-
-<pre class="data">
-Users: <span class="users"></span>
-Average result: <span class="average"></span>
-</pre>
+	<pre class="data">
+	Users: <span class="users"></span>
+	Average result: <span class="average"></span>
+	</pre>
 
 
-<script src="/socket.io/socket.io.js"></script>
-<script>
-	let socket = io(),
-		d = document,
-		range = d.querySelector('[type="range"]'),
-		output = d.querySelector('.average'),
-		progress = d.querySelector('progress'),
-		users = d.querySelector('.users');
+	<script src="/socket.io/socket.io.js"></script>
+	<script>
+		let socket = io(),
+			d = document,
+			range = d.querySelector('[type="range"]'),
+			output = d.querySelector('.average'),
+			progress = d.querySelector('progress'),
+			users = d.querySelector('.users');
 
-	socket.on('connect', () => {
-		socket.emit('range change', range.value);
-		socket.emit('room enter', window.location.pathname);
-	});
+		socket.on('connect', () => {
+			socket.emit('range change', range.value);
+			socket.emit('room enter', window.location.pathname);
+		});
 
-	range.addEventListener('input', e => {
-		e.preventDefault();
-		socket.emit('range change', range.value);
-	});
+		range.addEventListener('input', e => {
+			e.preventDefault();
+			socket.emit('range change', range.value);
+		});
 
-	socket.on('average change', value => {
-		output.innerHTML = value;
-		progress.value = value;
-		progress.innerHTML = value + '%';
-	});
+		socket.on('average change', value => {
+			output.innerHTML = value;
+			progress.value = value;
+			progress.innerHTML = value + '%';
+		});
 
-	socket.on('update users', value => {
-		users.innerHTML = value;
-	});
+		socket.on('update users', value => {
+			users.innerHTML = value;
+		});
 
-	socket.on('log', value => {
-		console.info(value);
-	});
-</script>
+		socket.on('log', value => {
+			console.info(value);
+		});
+	</script>
 
 </body>
 </html>
