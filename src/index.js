@@ -14,8 +14,10 @@ const io = require('socket.io')(server);
 
 const Poll = require('./poll')(io);
 
+app.set('view engine', 'twig');
+
 io.on('connection', socket => {
-	socket.on('room enter', function (data) {
+	socket.on('room enter', (data) => {
 		let room = path.parse(data).name;
 
 		socket.join(room, () => {
@@ -43,18 +45,21 @@ io.on('connection', socket => {
 
 app.set('port', (process.env.PORT || 3000));
 
-app.use(express.static('views'));
 app.use('/scripts', express.static(path.join(__dirname, '../node_modules/')));
 app.use('/static', express.static(path.join(__dirname, '../static/')));
 
-app.get('/poll/:pollId', function (req, res) {
-	res.sendFile(path.join(__dirname, '../views/app.html'));
+app.get('/', (req, res) => {
+	res.render(path.join(__dirname, '../views/', req.baseUrl));
+})
+
+app.get('/poll/:pollId', (req, res) => {
+	res.render(path.join(__dirname, '../views/app', req.baseUrl));
 });
 
-app.use(function (req, res) {
+app.use((req, res) => {
 	res.status(404).send('Damn! 4-oh-4!');
 });
 
-server.listen(app.get('port'), function () {
+server.listen(app.get('port'), () => {
 	console.log('Node app is running on port', app.get('port'));
 });
