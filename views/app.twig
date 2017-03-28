@@ -1,71 +1,51 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<title>Livepoll</title>
-	<link rel="stylesheet" href="/scripts/normalize.css/normalize.css">
-	<link rel="stylesheet" href="/static/style/style.css">
+{% include 'header.twig' %}
 
-	<link rel="apple-touch-icon" sizes="180x180" href="/static/favicons/apple-touch-icon.png">
-	<link rel="icon" type="image/png" href="/static/favicons/favicon-32x32.png" sizes="32x32">
-	<link rel="icon" type="image/png" href="/static/favicons/favicon-16x16.png" sizes="16x16">
-	<link rel="manifest" href="/static/favicons/manifest.json">
-	<link rel="mask-icon" href="/static/favicons/safari-pinned-tab.svg" color="#111111">
-	<meta name="theme-color" content="#ffffff">
-</head>
-<body>
+	<h3>Your opinion</h3>
 
-<h2>Livepoll</h2>
+	<input type="range" min="0" max="100" value="50" step="5">
 
-<h3>Your opinion</h3>
+	<h3>Live results</h3>
 
-<input type="range" min="0" max="100" value="50" step="5">
+	<progress value="50" max="100">50%</progress>
 
-<h3>Live results</h3>
-
-<progress value="50" max="100">50%</progress>
-
-<pre class="data">
+	<pre class="data">
 Users: <span class="users"></span>
 Average result: <span class="average"></span>
-</pre>
+	</pre>
 
 
-<script src="/socket.io/socket.io.js"></script>
-<script>
-	let socket = io(),
-		d = document,
-		range = d.querySelector('[type="range"]'),
-		output = d.querySelector('.average'),
-		progress = d.querySelector('progress'),
-		users = d.querySelector('.users');
+	<script src="/socket.io/socket.io.js"></script>
+	<script>
+		let socket = io(),
+			d = document,
+			range = d.querySelector('[type="range"]'),
+			output = d.querySelector('.average'),
+			progress = d.querySelector('progress'),
+			users = d.querySelector('.users');
 
-	socket.on('connect', () => {
-		socket.emit('range change', range.value);
-		socket.emit('room enter', window.location.pathname);
-	});
+		socket.on('connect', () => {
+			socket.emit('range change', range.value);
+			socket.emit('room enter', window.location.pathname);
+		});
 
-	range.addEventListener('input', e => {
-		e.preventDefault();
-		socket.emit('range change', range.value);
-	});
+		range.addEventListener('input', e => {
+			e.preventDefault();
+			socket.emit('range change', range.value);
+		});
 
-	socket.on('average change', value => {
-		output.innerHTML = value;
-		progress.value = value;
-		progress.innerHTML = value + '%';
-	});
+		socket.on('average change', value => {
+			output.innerHTML = value;
+			progress.value = value;
+			progress.innerHTML = value + '%';
+		});
 
-	socket.on('update users', value => {
-		users.innerHTML = value;
-	});
+		socket.on('update users', value => {
+			users.innerHTML = value;
+		});
 
-	socket.on('log', value => {
-		console.info(value);
-	});
-</script>
+		socket.on('log', value => {
+			console.info(value);
+		});
+	</script>
 
-</body>
-</html>
+{% include 'footer.twig' %}
