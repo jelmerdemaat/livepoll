@@ -49,3 +49,17 @@ h6 {
 	border-radius: 2px;
 	box-shadow: 1px 1px 0 #700, 2px 2px 0 #700;
 }
+
+.btn:hover,
+.btn:focus {
+	background: #700;
+	box-shadow: 1px 1px 0 #111, 2px 2px 0 #111;
+}
+
+.btn:focus {
+	box-shadow: inset 2px 2px 0 #111;
+	box-shadow: inset 2px 2px 0 rgba(0, 0, 0, 0.5);
+	position: relative;
+	left: 2px;
+	top: 2px;
+}
